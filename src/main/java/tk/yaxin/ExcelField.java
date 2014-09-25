@@ -1,4 +1,4 @@
-package tk.yanxin;
+package tk.yaxin;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

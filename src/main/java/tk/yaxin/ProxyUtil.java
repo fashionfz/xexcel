@@ -10,7 +10,7 @@
  * @date 2014年3月28日 上午10:03:20
  * @version V1.0
  */
-package tk.yanxin;
+package tk.yaxin;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

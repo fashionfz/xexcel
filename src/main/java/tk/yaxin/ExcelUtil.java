@@ -1,4 +1,4 @@
-package tk.yanxin;
+package tk.yaxin;
 
 import java.io.IOException;
 import java.io.InputStream;

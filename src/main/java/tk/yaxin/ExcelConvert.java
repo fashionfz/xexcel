@@ -1,4 +1,4 @@
-package tk.yanxin;
+package tk.yaxin;
 
 /**
  * 
