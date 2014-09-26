@@ -154,10 +154,9 @@ public class ExcelUtil {
             jxl.Workbook book = jxl.Workbook.getWorkbook(in);
             jxl.Sheet sheet = book.getSheet(0);
             List<String> fieldNames = new ArrayList<String>();
-            cell = sheet.getCell(i++, 0);
-            while(!"".equals(cell.getContents()));{
-            	fieldNames.add(cell.getContents());
-            	cell = sheet.getCell(i++, 0);
+            Cell[] cells = sheet.getRow(0);
+            for(Cell title : cells){
+            	fieldNames.add(title.getContents());
             }
             map = ProxyUtil.getFields(clazz);
             for(int row=1;row<sheet.getRows();row++){
