@@ -77,6 +77,7 @@ public class ExcelUtil {
 						}
 						sheet.addCell(label);
 					}catch(Exception e){
+						e.printStackTrace();
 						Label label = new Label(j, i, "/");
 						sheet.addCell(label);
 					}

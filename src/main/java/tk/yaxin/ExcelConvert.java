@@ -17,7 +17,7 @@ public interface ExcelConvert {
 	 * @param obj
 	 * @return
 	 */
-	public Object convertToObj(Object obj);
+	public Object convertToObj(String obj);
 	/**
 	 * 
 	 * @Title: convert 
@@ -25,5 +25,5 @@ public interface ExcelConvert {
 	 * @param obj
 	 * @return
 	 */
-	public Object convertToExcel(Object obj);
+	public Object convertToExcel(String obj);
 }
