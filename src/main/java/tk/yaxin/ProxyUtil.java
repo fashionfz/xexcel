@@ -20,8 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -33,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class ProxyUtil {
-	protected static final Logger logger = LoggerFactory.getLogger(ProxyUtil.class);
+	protected static final Logger logger = Logger.getLogger(ProxyUtil.class);
 	
 	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	/**

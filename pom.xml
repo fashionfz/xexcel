@@ -1,43 +1,82 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-  <groupId>tk.yaxin</groupId>
-  <artifactId>xexcel</artifactId>
-  <version>0.0.1-Releases</version>
-  <packaging>jar</packaging>
-
-  <name>xexcel</name>
-  <url>http://maven.apache.org</url>
-
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-
-  <dependencies>
-    
-    <dependency>
-      <groupId>net.sourceforge.jexcelapi</groupId>
-      <artifactId>jxl</artifactId>
-      <version>2.6.10</version>
-    </dependency>    
-    
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-		   
-  </dependencies>
+	<groupId>tk.yaxin</groupId>
+	<artifactId>xexcel</artifactId>
+	<version>0.0.1-Releases</version>
+	<packaging>jar</packaging>
+	<name>xexcel</name>
+	<description>excel import/export util，Be based on jxl implement</description>
+	<url>http://www.yaxin.tk</url>
+	<licenses>
+	    <license>
+	      <name>The Apache Software License, Version 2.0</name>
+	      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	      <distribution>repo</distribution>
+	    </license>
+  	</licenses>
+  	
+	<scm>
+	    <connection>
+	      scm:git:git://github.com/fashionfz/xexcel.git
+	    </connection>
+	    <url>scm:git:git://github.com/fashionfz/xexcel.git</url>
+	    <developerConnection>
+	      scm:git:git://github.com/fashionfz/xexcel.git
+	    </developerConnection>
+	  </scm>  	
   
-  <build>
-  	<defaultGoal>compile</defaultGoal>
-  </build>
-  <distributionManagement>
-	  <repository>
-	      <id>releases</id>
-	      <name>MyCo Internal Repository</name>
-	      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-	    </repository>
-  </distributionManagement>
+  
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>net.sourceforge.jexcelapi</groupId>
+			<artifactId>jxl</artifactId>
+			<version>2.6.10</version>
+		</dependency>
+	</dependencies>
+	
+	<developers>
+		<developer>
+			<email>ibcm@qq.com</email>
+			<name>dengbin</name>
+			<url>www.yaxin.tk</url>
+		</developer>
+	</developers>
+
+	<build>
+		<defaultGoal>compile</defaultGoal>
+		
+		<plugins>
+		   <plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-gpg-plugin</artifactId>
+		    <version>1.0</version>
+		    <executions>
+		     <execution>
+		      <id>sign-artifacts</id>
+		      <phase>verify</phase>
+		      <goals>
+		       <goal>sign</goal>
+		      </goals>
+		     </execution>
+		    </executions>
+		   </plugin>
+		  </plugins>		
+		
+	</build>
+	
+	
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<name>MyCo Internal Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
+	</distributionManagement>
 </project>
