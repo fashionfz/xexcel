@@ -31,8 +31,11 @@
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
-        <p>xexcel<br>
-excel import/export util，Be based on jxl implement.<br>
+        <h1>
+<a name="xexcel" class="anchor" href="#xexcel"><span class="octicon octicon-link"></span></a>xexcel<br>
+</h1>
+
+<p>excel import/export util，Be based on jxl implement.<br>
 More explanation: <a href="http://www.yaxin.tk">http://www.yaxin.tk</a><br>
 import by maven<br>
 &lt;dependency&gt;<br>
@@ -40,6 +43,72 @@ import by maven<br>
 &lt;artifactId&gt;xexcel&lt;/artifactId&gt;<br>
 &lt;version&gt;0.0.1-Releases&lt;/version&gt;<br>
 &lt;/dependency&gt;</p>
+
+<h1>
+<a name="use-example" class="anchor" href="#use-example"><span class="octicon octicon-link"></span></a>use example:<br>
+</h1>
+
+<h2>
+<a name="pojo" class="anchor" href="#pojo"><span class="octicon octicon-link"></span></a>pojo:<br>
+</h2>
+
+<p>public class User {<br>
+    @ExcelField(lableName="name")<br>
+    private String name;<br>
+    @ExcelField(lableName="sex",covertClass=SexConvert.class)<br>
+    private String sex;<br>
+    public String getName() {<br>
+        return name;<br>
+    }<br>
+    public void setName(String name) {<br>
+        this.name = name;<br>
+    }<br>
+    public String getSex() {<br>
+        return sex;<br>
+    }<br>
+    public void setSex(String sex) {<br>
+        this.sex = sex;<br>
+    }<br>
+}<br></p>
+
+<h2>
+<a name="convert-class" class="anchor" href="#convert-class"><span class="octicon octicon-link"></span></a>convert class:<br>
+</h2>
+
+<p>public class SexConvert implements ExcelConvert{<br>
+    public Object convertToObj(String obj) {<br>
+        if("man".equals(obj))<br>
+            return 0;<br>
+        else<br>
+            return 1;<br>
+    }<br>
+    public Object convertToExcel(String obj) {<br>
+        if("0".equals(obj))<br>
+            return "man";<br>
+        else<br>
+            return "woman";<br>
+    }<br>
+}<br></p>
+
+<h2>
+<a name="main-class" class="anchor" href="#main-class"><span class="octicon octicon-link"></span></a>main class:<br>
+</h2>
+
+<p>public class Test {<br>
+    UserDAO userDAO;<br>
+    public void export(HttpServletResponse response){<br>
+        response.setContentType("application/x-msdownload;");  <br>
+        response.setHeader("Content-disposition", "attachment; filename="  <br>
+                 +  java.net.URLEncoder.encode("user.xls", "UTF-8"));<br>
+        List list=userDao.getUser();<br>
+        ByteArrayOutputStream os = new ByteArrayOutputStream();<br>
+        ExcelUtil.export(User.class, list, os);<br>
+        byte[] files = os.toByteArray();<br>
+        response.setHeader("Content-Length", String.valueOf(files.length)); <br>
+        response.getOutputStream().write(files);<br>
+        os.close();<br>
+    }<br>
+}</p>
       </section>
     </div>
 
