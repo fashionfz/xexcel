@@ -1,7 +1,5 @@
 package tk.yaxin;
 
-import java.lang.reflect.Type;
-
 /**
  * 
  * @ClassName: ExcelConvert 
@@ -10,13 +8,9 @@ import java.lang.reflect.Type;
  * @date 2014年9月17日 下午1:18:36 
  *
  */
-public interface ExcelConvert<O, E> {
+public interface ExcelConvert<E> {
 	
 	
-	public Type getObjectFieldType();
-
-	
-	public Type getExcelFieldType();
 	/**
 	 * 
 	 * @Title: convert 
@@ -24,7 +18,7 @@ public interface ExcelConvert<O, E> {
 	 * @param obj
 	 * @return
 	 */
-	public O convertToObject(E obj);
+	public E convertToObject(String obj);
 	/**
 	 * 
 	 * @Title: convert 
@@ -32,5 +26,5 @@ public interface ExcelConvert<O, E> {
 	 * @param obj
 	 * @return
 	 */
-	public E convertToExcel(O obj);
+	public String convertToExcel(E obj);
 }

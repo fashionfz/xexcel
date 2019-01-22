@@ -9,14 +9,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -39,10 +38,10 @@ public class ExcelUtil {
 	public static void export(Class<?> clazz, List<?> list, OutputStream os) {
 		try {
 			// 创建工作薄
-			HSSFWorkbook workbook = new HSSFWorkbook();
+			XSSFWorkbook workbook = new XSSFWorkbook();
 			// 创建工作表
-			HSSFSheet sheet = workbook.createSheet("sheet1");
-			HSSFRow header = sheet.createRow(0);
+			XSSFSheet sheet = workbook.createSheet("sheet1");
+			XSSFRow header = sheet.createRow(0);
 			Field[] fields = clazz.getDeclaredFields(); // Field,convert
 			List<Object[]> excelField = new LinkedList<Object[]>();
 			int m = 0;
@@ -61,18 +60,14 @@ public class ExcelUtil {
 			int i = 1;
 			Object[] objs;
 			for (Object info : list) {
-				HSSFRow data = sheet.createRow(i++);
+				XSSFRow data = sheet.createRow(i++);
 				for (int j = 0; j < excelField.size(); j++) {
 					try {
 						objs = excelField.get(j);
 						Object value = ProxyUtil.getFieldValue(info, (Field) objs[0]);
 						if (!((Class<?>) objs[1]).isInterface()) {// 不是接口就是实例化
 							ExcelConvert convert = (ExcelConvert) ((Class<?>) objs[1]).newInstance();
-							if (convert.getObjectFieldType() == ((Field) objs[0]).getType()) {
-								value = convert.convertToExcel(value);
-							} else {
-								System.out.println("转换参数类型不匹配");
-							}
+							value = convert.convertToExcel(value);
 
 						}
 						data.createCell(j).setCellValue((String) value);
