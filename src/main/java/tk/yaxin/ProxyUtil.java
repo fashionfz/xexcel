@@ -13,14 +13,10 @@
 package tk.yaxin;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.Logger;
 
 
 /**
@@ -32,56 +28,8 @@ import org.apache.log4j.Logger;
  *
  */
 public class ProxyUtil {
-	protected static final Logger logger = Logger.getLogger(ProxyUtil.class);
-	
-	private static final SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	/**
-	 * 
-	  * getter()
-	  *根据对象属性字符串调用对应的getter方法返回值
-	  * @param obj 对象
-	  * @param att 属性字符串
-	  * @return
-	  * @throws SecurityException
-	  * @throws NoSuchMethodException
-	  * @throws IllegalArgumentException
-	  * @throws IllegalAccessException
-	  * @throws InvocationTargetException
-	 */
-	public static Object getter(Object obj, String att) 
-			throws SecurityException, NoSuchMethodException, 
-			IllegalArgumentException, IllegalAccessException, InvocationTargetException { 
-		try{
-			Method method = obj.getClass().getMethod("get" + firstLetterToUpper(att)); 
-			return method.invoke(obj); 
-		}catch(Exception e){
-			return null;
-		}
-	} 
-	
-	
-	public static Object isser(Object obj, String att) 
-			throws SecurityException, NoSuchMethodException, 
-			IllegalArgumentException, IllegalAccessException, InvocationTargetException { 
-		try{
-			Method method = obj.getClass().getMethod("is" + firstLetterToUpper(att)); 
-			return method.invoke(obj); 
-		}catch(Exception e){
-			return null;
-		}
-	} 
-	/**
-	 * 
-	  * firstLetterToUpper()
-	  *首字母大写
-	  * @param str 字符串
-	  * @return 
-	 */
-	protected static String firstLetterToUpper(String str) { 
-		char[] array = str.toCharArray(); 
-		array[0] -= 32; 
-		return String.valueOf(array); 
-	} 
+
+
 	
 	/**
 	 * 
@@ -90,40 +38,37 @@ public class ProxyUtil {
 	 * @param value
 	 * @param type
 	 */
-	public static void setter(Object obj, String att, Object value,
-			Class<?> type) {
+	public static void setter(Object obj, String att, Object value, Class<?> type) {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
 		try {
-			att =firstLetterToUpper(att);
-			Method method = obj.getClass().getMethod("set" + att, type);
 			if (type == String.class)
-				method.invoke(obj, toString(value));
+				setFieldValue(obj, att, toString(value));
 			else if (type == Integer.class || type == int.class)
-				method.invoke(obj, toInteger(value));
+				setFieldValue(obj, att, toInteger(value));
 			else if (type == double.class || type == Double.class)
-				method.invoke(obj, toDouble(value));
+				setFieldValue(obj, att, toDouble(value));
 			else if (type == char.class || type == Character.class)
-				method.invoke(obj, toCharacter(value));
+				setFieldValue(obj, att, toCharacter(value));
 			else if (type == long.class || type == Long.class)
-				method.invoke(obj, toLong(value));
+				setFieldValue(obj, att, toLong(value));
 			else if (type == float.class || type == Float.class)
-				method.invoke(obj, toFloat(value));
+				setFieldValue(obj, att, toFloat(value));
 			else if (type == byte.class || type == Byte.class)
-				method.invoke(obj, toByte(value));
+				setFieldValue(obj, att, toByte(value));
 			else if (type == boolean.class || type == Boolean.class)
-				method.invoke(obj, toBoolean(value));
+				setFieldValue(obj, att, toBoolean(value));
 			else if (type == short.class || type == Short.class)
-				method.invoke(obj, toShort(value));
+				setFieldValue(obj, att, toShort(value));
 			else if (type == java.util.Date.class) {
-				method.invoke(obj, df.parse(String.valueOf(value)));
+				setFieldValue(obj, att, df.parse(String.valueOf(value)));
 			} else if (type == java.sql.Timestamp.class) {
-                method.invoke(obj ,
+				setFieldValue(obj, att, 
                         new Timestamp(
                                 df.parse(String.valueOf(value)).getTime()));
             } else
-				method.invoke(obj, value);
+            	setFieldValue(obj, att, value);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			e.printStackTrace();
 		}
 	}	
 	/**
@@ -132,15 +77,7 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static String toString(Object object) {
-		if (object == null) {
-		    return "";}
-		else if (object instanceof Date) {
-			return df.format(object);
-		} else if (object instanceof Timestamp) {
-            return df.format(object);
-        }
-		else
-			return object.toString();
+			return String.valueOf(object);
 	}
 
 	/**
@@ -149,11 +86,11 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Integer toInteger(Object object) {
-		String str = toString(object);
-		if ("".equals(str))
+		try {
+			return Integer.parseInt(String.valueOf(object));
+		}catch(Exception e) {
 			return 0;
-		else
-			return Integer.parseInt(str);
+		}
 	}
 
 	/**
@@ -162,11 +99,12 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Double toDouble(Object object) {
-		String str = toString(object);
-		if ("".equals(str))
+		try {
+			return Double.parseDouble(String.valueOf(object));
+		}catch(Exception e) {
 			return 0.0;
-		else
-			return Double.parseDouble(str);
+		}
+			
 	}
 
 	/**
@@ -175,11 +113,11 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Float toFloat(Object object) {
-		String str = toString(object);
-		if ("".equals(str))
+		try {
+			return Float.parseFloat(String.valueOf(object));
+		}catch(Exception e) {
 			return 0.0f;
-		else
-			return Float.parseFloat(str);
+		}
 	}
 
 	/**
@@ -188,11 +126,11 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Long toLong(Object object) {
-		String str = toString(object);
-		if ("".equals(str))
+		try {
+			return Long.parseLong(String.valueOf(object));
+		}catch(Exception e) {
 			return 0l;
-		else
-			return Long.parseLong(str);
+		}
 	}
 
 	/**
@@ -201,11 +139,11 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Boolean toBoolean(Object object) {
-		String str = toString(object);
-		if ("".equals(str))
-			return true;
-		else
-			return Boolean.parseBoolean(str);
+		try {
+			return Boolean.parseBoolean(String.valueOf(object));
+		}catch(Exception e) {
+			return false;
+		}
 	}
 
 	/**
@@ -214,11 +152,12 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Short toShort(Object object) {
-		String str = toString(object);
-		if ("".equals(str))
+		try {
+			return Short.parseShort(String.valueOf(object));
+		}catch(Exception e) {
 			return 0;
-		else
-			return Short.parseShort(str);
+		}
+			
 	}
 
 	/**
@@ -227,11 +166,11 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Byte toByte(Object object) {
-		String str = toString(object);
-		if ("".equals(str))
+		try {
+			return Byte.parseByte(String.valueOf(object));
+		}catch(Exception e) {
 			return 0;
-		else
-			return Byte.parseByte(str);
+		}
 	}
 
 	/**
@@ -328,6 +267,48 @@ public class ProxyUtil {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	
+	public static Object getFieldValue(Object obj, Field field) {
+		boolean acc = field.isAccessible();
+		Object res = null;
+		try {
+			field.setAccessible(true);
+			res = field.get(obj);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			field.setAccessible(acc);
+		}
+		return res;
+
+	}
+	
+	
+	public static void setFieldValue(Object obj, Field field, Object value) {
+		boolean acc = field.isAccessible();
+		try {
+			field.setAccessible(true);
+			field.set(obj, value);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}finally {
+			field.setAccessible(acc);
+		}
+	}
+	
+	public static void setFieldValue(Object obj, String fieldName, Object value) {
+
+		try {
+			Field field = obj.getClass().getDeclaredField(fieldName);
+			boolean acc = field.isAccessible();
+			field.setAccessible(true);
+			field.set(obj, value);
+			field.setAccessible(acc);
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
