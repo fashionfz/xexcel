@@ -1,15 +1,3 @@
-/**
- * Project Name:topx
- * @Title: ProxyUtil.java
- * @Package com.helome.monitor.utils
- * @Description: TODO
- * Copyright: Copyright (c) 2014 All Rights Reserved. 
- * Company:helome.com
- * 
- * @author bin.deng@helome.com
- * @date 2014年3月28日 上午10:03:20
- * @version V1.0
- */
 package tk.yaxin;
 
 import java.lang.reflect.Field;
@@ -23,11 +11,7 @@ import java.util.Map;
 
 
 /**
- * @ClassName: ProxyUtil
- * @Description: 动态代理工具类，反射获取类的相关字段，
- * 以及反射调用类的setter或getter方法
- * @author bin.deng
- * @date 2014年3月28日 上午10:03:20
+ * 动态代理工具类，反射获取类的相关字段
  *
  */
 public class ProxyUtil {
@@ -46,15 +30,15 @@ public class ProxyUtil {
 	
 	/**
 	 * 
-	 * @param obj
-	 * @param att
-	 * @param value
-	 * @param type
-	 * @throws ParseException 
-	 * @throws IllegalAccessException 
-	 * @throws IllegalArgumentException 
-	 * @throws SecurityException 
-	 * @throws NoSuchFieldException 
+	 * @param obj 对象
+	 * @param att 字段名称
+	 * @param value 字段值
+	 * @param type 字段类型
+	 * @throws ParseException ParseException
+	 * @throws IllegalAccessException IllegalAccessException
+	 * @throws IllegalArgumentException IllegalArgumentException
+	 * @throws SecurityException SecurityException
+	 * @throws NoSuchFieldException NoSuchFieldException
 	 */
 	public static void setter(Object obj, String att, Object value, Class<?> type) throws ParseException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
@@ -88,8 +72,8 @@ public class ProxyUtil {
 
 	/**
 	 * 
-	 * @param object
-	 * @return
+	 * @param object 对象
+	 * @return 整型值
 	 */
 	protected static Integer toInteger(Object object) {
 		return Integer.parseInt(String.valueOf(object));
@@ -97,8 +81,8 @@ public class ProxyUtil {
 
 	/**
 	 * 
-	 * @param object
-	 * @return
+	 * @param object 对象
+	 * @return double值
 	 */
 	protected static Double toDouble(Object object) {
 		return Double.parseDouble(String.valueOf(object));
@@ -106,8 +90,8 @@ public class ProxyUtil {
 
 	/**
 	 * 
-	 * @param object
-	 * @return
+	 * @param object 对象
+	 * @return float值
 	 */
 	protected static Float toFloat(Object object) {
 		return Float.parseFloat(String.valueOf(object));
@@ -115,8 +99,8 @@ public class ProxyUtil {
 
 	/**
 	 * 
-	 * @param object
-	 * @return
+	 * @param object 对象
+	 * @return long值
 	 */
 	protected static Long toLong(Object object) {
 		return Long.parseLong(String.valueOf(object));
@@ -124,8 +108,8 @@ public class ProxyUtil {
 
 	/**
 	 * 
-	 * @param object
-	 * @return
+	 * @param object 对象
+	 * @return 布尔值
 	 */
 	protected static Boolean toBoolean(Object object) {
 		return Boolean.parseBoolean(String.valueOf(object));
@@ -133,8 +117,8 @@ public class ProxyUtil {
 
 	/**
 	 * 
-	 * @param object
-	 * @return
+	 * @param object 对象
+	 * @return short值
 	 */
 	protected static Short toShort(Object object) {
 		return Short.parseShort(String.valueOf(object));
@@ -142,8 +126,8 @@ public class ProxyUtil {
 
 	/**
 	 * 
-	 * @param object
-	 * @return
+	 * @param object 对象
+	 * @return byte值
 	 */
 	protected static Byte toByte(Object object) {
 		return Byte.parseByte(String.valueOf(object));
@@ -151,8 +135,8 @@ public class ProxyUtil {
 
 	/**
 	 * 
-	 * @param object
-	 * @return
+	 * @param object 对象
+	 * @return char值
 	 */
 	protected static Character toCharacter(Object object) {
 		if (object == null)
@@ -164,10 +148,9 @@ public class ProxyUtil {
 	
 	/**
 	 * 
-	 * @Title: getFields 
-	 * @Description: 根据实例获取类的字段属性 
-	 * @param obj
-	 * @return
+	 * 根据实例获取类的字段属性 
+	 * @param obj 对象
+	 * @return 对象的字段
 	 */
 	public static Field[] getFields(Object obj){
 		Field[] fields = obj.getClass().getDeclaredFields();
@@ -181,10 +164,9 @@ public class ProxyUtil {
 	
 	/**
 	 * 
-	 * @Title: getFields 
-	 * @Description: 根据实例获取类的字段属性 
-	 * @param obj
-	 * @return
+	 * 根据实例获取类的字段属性 
+	 * @param clazz 对象类
+	 * @return 类的字段
 	 */
 	public static Field[] getFields(Class<?> clazz){
 		Field[] fields = clazz.getDeclaredFields();
@@ -197,41 +179,9 @@ public class ProxyUtil {
 	
 	/**
 	 * 
-	 * @Title: getObject 
-	 * @Description: 根据类名称字符串获取实例 
-	 * @param name
-	 * @return
-	 * @throws ClassNotFoundException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 */
-	public static Object getObject(String name) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
-		return Class.forName(name).newInstance();
-	}
-	/**
-	 * 
-	 * @Title: getFields 
-	 * @Description: 根据类型名称字符串获取类字段属性
-	 * @param name
-	 * @return
-	 * @throws ClassNotFoundException 
-	 * @throws SecurityException 
-	 */
-	public static Field[] getFields(String name) throws SecurityException, ClassNotFoundException{
-		Field[] fields = Class.forName(name).getDeclaredFields();
-		Field[] child = Class.forName(name).getSuperclass().getDeclaredFields();
-		Field[] result = new Field[fields.length+child.length];
-		System.arraycopy(fields,0,result, 0, fields.length);
-		System.arraycopy(child,0,result, fields.length, child.length);
-		return result;
-	}
-	
-	/**
-	 * 
-	 * @Title: getFields 
-	 * @Description: 获取一个calss的字段名称和字段type的对应关系
-	 * @param clazz
-	 * @return
+	 * 获取一个calss的字段名称和字段type的对应关系
+	 * @param clazz 对象类
+	 * @return 字段名称和字段类型
 	 */
 	public static Map<String,Class<?>> getFieldMap(Class<?> clazz){
 		Map<String,Class<?>> map = new HashMap<String,Class<?>>();

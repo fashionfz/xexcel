@@ -1,30 +1,22 @@
 package tk.yaxin;
 
 /**
- * 
- * @ClassName: ExcelConvert 
- * @Description: excel字段转换接口 
- * @author bin.deng  ibcm@qq.com
- * @date 2014年9月17日 下午1:18:36 
+ * excel字段转换接口 
  *
  */
 public interface ExcelConvert<E> {
 	
 	
 	/**
-	 * 
-	 * @Title: convert 
-	 * @Description: 从excel转换成对象的实现方法
-	 * @param obj
-	 * @return
+	 * 从excel转换成对象的实现方法
+	 * @param obj excel值
+	 * @return 实体属性值
 	 */
 	public E convertToObject(String obj);
 	/**
-	 * 
-	 * @Title: convert 
-	 * @Description: 从对象转换excel的实现方法
-	 * @param obj
-	 * @return
+	 * 从对象转换excel的实现方法
+	 * @param obj 实体属性值
+	 * @return excel值
 	 */
 	public String convertToExcel(E obj);
 }

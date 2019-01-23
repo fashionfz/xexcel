@@ -22,10 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
- * @Title EXCEL处理工具类
- * @Description: 该类主要包括excel的导入、导出
- * @author bin.deng ibcm@qq.com
- * @date 2014年9月25日 上午10:53:48
+ * EXCEL处理工具类
  *
  */
 public class ExcelUtil {
@@ -66,14 +63,12 @@ public class ExcelUtil {
 
 	/**
 	 * 
-	 * @Title: export
-	 * @Description: 后台数据导出excel
 	 * @param clazz 传入结合包含的class
-	 * @param list  结合
+	 * @param list  集合
 	 * @param os    输出流
-	 * @throws IOException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
+	 * @throws IOException IOException
+	 * @throws IllegalAccessException  IllegalAccessException
+	 * @throws InstantiationException  InstantiationException
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void export(Class<?> clazz, List<?> list, OutputStream os) throws IOException, InstantiationException, IllegalAccessException {
@@ -113,19 +108,17 @@ public class ExcelUtil {
 
 	/**
 	 * 
-	 * @param <E>
-	 * @Title: leadingIn
-	 * @Description: excel导入
-	 * @param clazz
-	 * @param in
-	 * @return
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws IOException 
-	 * @throws ParseException 
-	 * @throws IllegalArgumentException 
-	 * @throws SecurityException 
-	 * @throws NoSuchFieldException 
+	 * @param <E> 泛型类
+	 * @param clazz 传入结合包含的class
+	 * @param in 输入流
+	 * @return 实体集合
+	 * @throws IllegalAccessException IllegalAccessException
+	 * @throws InstantiationException InstantiationException
+	 * @throws IOException IOException
+	 * @throws ParseException ParseException
+	 * @throws IllegalArgumentException IllegalArgumentException
+	 * @throws SecurityException SecurityException
+	 * @throws NoSuchFieldException NoSuchFieldException
 	 */
 	@SuppressWarnings({ "resource", "rawtypes" })
 	public static <E> List<E> leadingIn(Class<E> clazz, InputStream in) throws InstantiationException, IllegalAccessException, IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, ParseException {
