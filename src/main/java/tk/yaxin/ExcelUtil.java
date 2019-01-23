@@ -162,7 +162,6 @@ public class ExcelUtil {
 			}
 			list.add(obj);
 		}
-		in.close();
 		return list;
 	}
 }
