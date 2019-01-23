@@ -5,7 +5,7 @@ import by maven<br />
 &lt;dependency&gt;<br />
 &lt;groupId&gt;tk.yaxin&lt;/groupId&gt;<br />
 &lt;artifactId&gt;xexcel&lt;/artifactId&gt;<br />
-&lt;version&gt;0.0.1-Releases&lt;/version&gt;<br />
+&lt;version&gt;1.0.0-Releases&lt;/version&gt;<br />
 &lt;/dependency&gt;
 
 #use example:<br />
