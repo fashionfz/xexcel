@@ -14,9 +14,12 @@ package tk.yaxin;
 
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+
+
 
 
 /**
@@ -31,54 +34,57 @@ public class ProxyUtil {
 
 
 	
+	public static String toString(Object value, Class<?> type) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
+		if (type == java.util.Date.class) {
+			return df.format((java.util.Date)value);
+		} else if (type == java.sql.Timestamp.class) {
+			return df.format((java.sql.Timestamp)value);
+        } else
+        	return String.valueOf(value);
+	}
+	
 	/**
 	 * 
 	 * @param obj
 	 * @param att
 	 * @param value
 	 * @param type
+	 * @throws ParseException 
+	 * @throws IllegalAccessException 
+	 * @throws IllegalArgumentException 
+	 * @throws SecurityException 
+	 * @throws NoSuchFieldException 
 	 */
-	public static void setter(Object obj, String att, Object value, Class<?> type) {
+	public static void setter(Object obj, String att, Object value, Class<?> type) throws ParseException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:sss");
-		try {
-			if (type == String.class)
-				setFieldValue(obj, att, toString(value));
-			else if (type == Integer.class || type == int.class)
-				setFieldValue(obj, att, toInteger(value));
-			else if (type == double.class || type == Double.class)
-				setFieldValue(obj, att, toDouble(value));
-			else if (type == char.class || type == Character.class)
-				setFieldValue(obj, att, toCharacter(value));
-			else if (type == long.class || type == Long.class)
-				setFieldValue(obj, att, toLong(value));
-			else if (type == float.class || type == Float.class)
-				setFieldValue(obj, att, toFloat(value));
-			else if (type == byte.class || type == Byte.class)
-				setFieldValue(obj, att, toByte(value));
-			else if (type == boolean.class || type == Boolean.class)
-				setFieldValue(obj, att, toBoolean(value));
-			else if (type == short.class || type == Short.class)
-				setFieldValue(obj, att, toShort(value));
-			else if (type == java.util.Date.class) {
-				setFieldValue(obj, att, df.parse(String.valueOf(value)));
-			} else if (type == java.sql.Timestamp.class) {
-				setFieldValue(obj, att, 
-                        new Timestamp(
-                                df.parse(String.valueOf(value)).getTime()));
-            } else
-            	setFieldValue(obj, att, value);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		if (type == String.class)
+			setFieldValue(obj, att, (String)value);
+		else if (type == Integer.class || type == int.class)
+			setFieldValue(obj, att, toInteger(value));
+		else if (type == double.class || type == Double.class)
+			setFieldValue(obj, att, toDouble(value));
+		else if (type == char.class || type == Character.class)
+			setFieldValue(obj, att, toCharacter(value));
+		else if (type == long.class || type == Long.class)
+			setFieldValue(obj, att, toLong(value));
+		else if (type == float.class || type == Float.class)
+			setFieldValue(obj, att, toFloat(value));
+		else if (type == byte.class || type == Byte.class)
+			setFieldValue(obj, att, toByte(value));
+		else if (type == boolean.class || type == Boolean.class)
+			setFieldValue(obj, att, toBoolean(value));
+		else if (type == short.class || type == Short.class)
+			setFieldValue(obj, att, toShort(value));
+		else if (type == java.util.Date.class) {
+			setFieldValue(obj, att, df.parse(String.valueOf(value)));
+		} else if (type == java.sql.Timestamp.class) {
+			setFieldValue(obj, att, 
+                    new Timestamp(
+                            df.parse(String.valueOf(value)).getTime()));
+        } else
+        	setFieldValue(obj, att, value);
 	}	
-	/**
-	 * 
-	 * @param object
-	 * @return
-	 */
-	protected static String toString(Object object) {
-			return String.valueOf(object);
-	}
 
 	/**
 	 * 
@@ -86,11 +92,7 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Integer toInteger(Object object) {
-		try {
-			return Integer.parseInt(String.valueOf(object));
-		}catch(Exception e) {
-			return 0;
-		}
+		return Integer.parseInt(String.valueOf(object));
 	}
 
 	/**
@@ -99,12 +101,7 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Double toDouble(Object object) {
-		try {
-			return Double.parseDouble(String.valueOf(object));
-		}catch(Exception e) {
-			return 0.0;
-		}
-			
+		return Double.parseDouble(String.valueOf(object));
 	}
 
 	/**
@@ -113,11 +110,7 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Float toFloat(Object object) {
-		try {
-			return Float.parseFloat(String.valueOf(object));
-		}catch(Exception e) {
-			return 0.0f;
-		}
+		return Float.parseFloat(String.valueOf(object));
 	}
 
 	/**
@@ -126,11 +119,7 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Long toLong(Object object) {
-		try {
-			return Long.parseLong(String.valueOf(object));
-		}catch(Exception e) {
-			return 0l;
-		}
+		return Long.parseLong(String.valueOf(object));
 	}
 
 	/**
@@ -139,11 +128,7 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Boolean toBoolean(Object object) {
-		try {
-			return Boolean.parseBoolean(String.valueOf(object));
-		}catch(Exception e) {
-			return false;
-		}
+		return Boolean.parseBoolean(String.valueOf(object));
 	}
 
 	/**
@@ -152,12 +137,7 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Short toShort(Object object) {
-		try {
-			return Short.parseShort(String.valueOf(object));
-		}catch(Exception e) {
-			return 0;
-		}
-			
+		return Short.parseShort(String.valueOf(object));
 	}
 
 	/**
@@ -166,11 +146,7 @@ public class ProxyUtil {
 	 * @return
 	 */
 	protected static Byte toByte(Object object) {
-		try {
-			return Byte.parseByte(String.valueOf(object));
-		}catch(Exception e) {
-			return 0;
-		}
+		return Byte.parseByte(String.valueOf(object));
 	}
 
 	/**
@@ -208,18 +184,12 @@ public class ProxyUtil {
 	 * @Description: 根据类名称字符串获取实例 
 	 * @param name
 	 * @return
+	 * @throws ClassNotFoundException 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
 	 */
-	public static Object getObject(String name){
-		try {
-			return Class.forName(name).newInstance();
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public static Object getObject(String name) throws InstantiationException, IllegalAccessException, ClassNotFoundException{
+		return Class.forName(name).newInstance();
 	}
 	/**
 	 * 
@@ -227,21 +197,16 @@ public class ProxyUtil {
 	 * @Description: 根据类型名称字符串获取类字段属性
 	 * @param name
 	 * @return
+	 * @throws ClassNotFoundException 
+	 * @throws SecurityException 
 	 */
-	public static Field[] getFields(String name){
-		try {
-			Field[] fields = Class.forName(name).getDeclaredFields();
-			Field[] child = Class.forName(name).getSuperclass().getDeclaredFields();
-			Field[] result = new Field[fields.length+child.length];
-			System.arraycopy(fields,0,result, 0, fields.length);
-			System.arraycopy(child,0,result, fields.length, child.length);
-			return result;
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
-		return null;
+	public static Field[] getFields(String name) throws SecurityException, ClassNotFoundException{
+		Field[] fields = Class.forName(name).getDeclaredFields();
+		Field[] child = Class.forName(name).getSuperclass().getDeclaredFields();
+		Field[] result = new Field[fields.length+child.length];
+		System.arraycopy(fields,0,result, 0, fields.length);
+		System.arraycopy(child,0,result, fields.length, child.length);
+		return result;
 	}
 	
 	/**
@@ -252,63 +217,42 @@ public class ProxyUtil {
 	 * @return
 	 */
 	public static Map<String,Class<?>> getFields(Class<?> clazz){
-		try {
-			Map<String,Class<?>> map = new HashMap<String,Class<?>>();
-			Field[] fields = clazz.getDeclaredFields();
-			Field[] child = clazz.getSuperclass().getDeclaredFields();
-			for(Field field : fields){
-				map.put(field.getName(), field.getType());
-			}
-			for(Field field : child){
-				map.put(field.getName(), field.getType());
-			}
-			return map;
-		} catch (SecurityException e) {
-			e.printStackTrace();
+		Map<String,Class<?>> map = new HashMap<String,Class<?>>();
+		Field[] fields = clazz.getDeclaredFields();
+		Field[] child = clazz.getSuperclass().getDeclaredFields();
+		for(Field field : fields){
+			map.put(field.getName(), field.getType());
 		}
-		return null;
+		for(Field field : child){
+			map.put(field.getName(), field.getType());
+		}
+		return map;
 	}
 	
 	
-	public static Object getFieldValue(Object obj, Field field) {
+	public static Object getFieldValue(Object obj, Field field) throws IllegalArgumentException, IllegalAccessException {
 		boolean acc = field.isAccessible();
-		Object res = null;
-		try {
-			field.setAccessible(true);
-			res = field.get(obj);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally {
-			field.setAccessible(acc);
-		}
+		field.setAccessible(true);
+		Object res = field.get(obj);
+		field.setAccessible(acc);
 		return res;
 
 	}
 	
 	
-	public static void setFieldValue(Object obj, Field field, Object value) {
+	public static void setFieldValue(Object obj, Field field, Object value) throws IllegalArgumentException, IllegalAccessException {
 		boolean acc = field.isAccessible();
-		try {
-			field.setAccessible(true);
-			field.set(obj, value);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}finally {
-			field.setAccessible(acc);
-		}
+		field.setAccessible(true);
+		field.set(obj, value);
+		field.setAccessible(acc);
 	}
 	
-	public static void setFieldValue(Object obj, String fieldName, Object value) {
-
-		try {
-			Field field = obj.getClass().getDeclaredField(fieldName);
-			boolean acc = field.isAccessible();
-			field.setAccessible(true);
-			field.set(obj, value);
-			field.setAccessible(acc);
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
+	public static void setFieldValue(Object obj, String fieldName, Object value) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field field = obj.getClass().getDeclaredField(fieldName);
+		boolean acc = field.isAccessible();
+		field.setAccessible(true);
+		field.set(obj, value);
+		field.setAccessible(acc);
 	}
 
 }
