@@ -21,4 +21,6 @@ public @interface ExcelField {
 	/**转换类，需实现ExcelConvert接口*/
 	@SuppressWarnings("rawtypes")
 	Class<? extends ExcelConvert> covertClass() default ExcelConvert.class;
+	/**排序，越小越靠前*/
+	int sort() default 99;
 }

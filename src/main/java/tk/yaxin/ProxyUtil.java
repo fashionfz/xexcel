@@ -178,6 +178,23 @@ public class ProxyUtil {
 		return result;
 	}
 	
+	
+	/**
+	 * 
+	 * @Title: getFields 
+	 * @Description: 根据实例获取类的字段属性 
+	 * @param obj
+	 * @return
+	 */
+	public static Field[] getFields(Class<?> clazz){
+		Field[] fields = clazz.getDeclaredFields();
+		Field[] parent = clazz.getSuperclass().getDeclaredFields();
+		Field[] result = new Field[fields.length+parent.length];
+		System.arraycopy(fields,0,result, 0, fields.length);
+		System.arraycopy(parent,0,result, fields.length, parent.length);
+		return result;
+	}
+	
 	/**
 	 * 
 	 * @Title: getObject 
@@ -216,7 +233,7 @@ public class ProxyUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public static Map<String,Class<?>> getFields(Class<?> clazz){
+	public static Map<String,Class<?>> getFieldMap(Class<?> clazz){
 		Map<String,Class<?>> map = new HashMap<String,Class<?>>();
 		Field[] fields = clazz.getDeclaredFields();
 		Field[] child = clazz.getSuperclass().getDeclaredFields();

@@ -6,10 +6,12 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -27,6 +29,40 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  *
  */
 public class ExcelUtil {
+	
+	
+	@SuppressWarnings("rawtypes")
+	private static Map<String, ExcelConvert> getConvert(Field[] fields) throws InstantiationException, IllegalAccessException {
+		Map<String, ExcelConvert> convertMap = new HashMap<String, ExcelConvert>();
+		for (Field field : fields) {
+			ExcelField annotation = field.getAnnotation(ExcelField.class);
+			if (annotation != null && !annotation.covertClass().isInterface()) {
+				ExcelConvert convert = (ExcelConvert) annotation.covertClass().newInstance();
+				convertMap.put(field.getName(), convert);
+			}
+		}
+		return convertMap;
+	}
+	
+	
+	private static List<Field> getExcelField(Field[] fields) {
+		List<Field> excelField = new ArrayList<Field>();
+		for (Field field : fields) {
+			ExcelField annotation = field.getAnnotation(ExcelField.class);
+			if (annotation != null) {
+				excelField.add(field);
+			}
+		}
+		Collections.sort(excelField, new Comparator<Field>() {
+			public int compare(Field o1, Field o2) {
+				ExcelField annotation1 = o1.getAnnotation(ExcelField.class);
+				ExcelField annotation2 = o2.getAnnotation(ExcelField.class);
+				return annotation1.sort() - annotation2.sort();
+			}
+		});
+		return excelField;
+	}
+	
 
 	/**
 	 * 
@@ -44,42 +80,29 @@ public class ExcelUtil {
 		XSSFWorkbook workbook = new XSSFWorkbook();
 		XSSFSheet sheet = workbook.createSheet("sheet1");
 		XSSFRow header = sheet.createRow(0);
-		Field[] fields = clazz.getDeclaredFields(); // Field,convert
-		List<Object[]> excelField = new LinkedList<Object[]>();
-		Map<String, ExcelConvert> convertMap = new HashMap<String, ExcelConvert>();
-		int m = 0;
-		for (int j = 0; j < fields.length; j++) {
-			ExcelField annotation = fields[j].getAnnotation(ExcelField.class);
+		Field[] fields = ProxyUtil.getFields(clazz); // Field,convert
+		List<Field> excelField = getExcelField(fields);
+		for (int m = 0; m < excelField.size(); m++) {
+			ExcelField annotation = excelField.get(m).getAnnotation(ExcelField.class);
 			if (annotation != null) {
-				Object[] objs = new Object[2];
-				header.createCell(m++).setCellValue(String.valueOf(annotation.lableName()));
-				objs[0] = fields[j];
-				Class<? extends ExcelConvert> convert = annotation.covertClass();
-				objs[1] = convert;
-				excelField.add(objs);
+				header.createCell(m).setCellValue(String.valueOf(annotation.lableName()));
 			}
 		}
-		int i = 1;
-		Object[] objs;
+		int row = 1;
+		Map<String, ExcelConvert> convertMap = getConvert(fields);
 		for (Object info : list) {
-			XSSFRow data = sheet.createRow(i++);
-			for (int j = 0; j < excelField.size(); j++) {
-				objs = excelField.get(j);
-				Object value = ProxyUtil.getFieldValue(info, (Field) objs[0]);
+			XSSFRow data = sheet.createRow(row++);
+			for (int i = 0; i < excelField.size(); i++) {
+				Field field = excelField.get(i);
+				ExcelConvert convert = convertMap.get(field.getName());
+				Object value = ProxyUtil.getFieldValue(info, field);
 				if(value == null) {
 					continue;
 				}
-				if (!((Class<?>) objs[1]).isInterface()) {// 不是接口就是实例化
-					if(convertMap.containsKey(objs[1].toString())) {
-						ExcelConvert convert = convertMap.get(objs[1].toString());
-						data.createCell(j).setCellValue(convert.convertToExcel(value));
-					}else {
-						ExcelConvert convert = (ExcelConvert) ((Class<?>) objs[1]).newInstance();
-						convertMap.put(objs[1].toString(), convert);
-						data.createCell(j).setCellValue(convert.convertToExcel(value));
-					}
+				if (convert != null) {
+					data.createCell(i).setCellValue(convert.convertToExcel(value));
 				}else {
-					data.createCell(j).setCellValue(ProxyUtil.toString(value, ((Field) objs[0]).getType()));
+					data.createCell(i).setCellValue(ProxyUtil.toString(value, field.getType()));
 				}
 				
 			}
@@ -90,6 +113,7 @@ public class ExcelUtil {
 
 	/**
 	 * 
+	 * @param <E>
 	 * @Title: leadingIn
 	 * @Description: excel导入
 	 * @param clazz
@@ -103,16 +127,14 @@ public class ExcelUtil {
 	 * @throws SecurityException 
 	 * @throws NoSuchFieldException 
 	 */
-	@SuppressWarnings("resource")
-	public static List<?> leadingIn(Class<?> clazz, InputStream in) throws InstantiationException, IllegalAccessException, IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, ParseException {
-		List<Object> list = new ArrayList<Object>();
-		int i = 0;
-		Map<String, Class<?>> map = new HashMap<String, Class<?>>();
+	@SuppressWarnings({ "resource", "rawtypes" })
+	public static <E> List<E> leadingIn(Class<E> clazz, InputStream in) throws InstantiationException, IllegalAccessException, IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, ParseException {
+		List<E> list = new ArrayList<E>();
 		Workbook book;
 		try {
-			book = new HSSFWorkbook(in);
-		} catch (Exception e) {
 			book = new XSSFWorkbook(in);
+		} catch (Exception e) {
+			book = new HSSFWorkbook(in);
 		}
 		Sheet sheet = book.getSheetAt(0);
 		List<String> fieldNames = new ArrayList<String>();
@@ -121,61 +143,17 @@ public class ExcelUtil {
 			Cell cell = header.getCell(cIndex);
 			fieldNames.add(cell.toString());
 		}
-		map = ProxyUtil.getFields(clazz);
+		Map<String, Class<?>> map = ProxyUtil.getFieldMap(clazz);
+		Map<String, ExcelConvert> convert = getConvert(ProxyUtil.getFields(clazz));
 		for (int row = 1; row < sheet.getLastRowNum(); row++) {
-			i = 0;
-			Object obj = clazz.newInstance();
+			E obj = clazz.newInstance();
 			Row data = sheet.getRow(row);
-			for (String field : fieldNames) {
-				Cell cell = data.getCell(i++);
-				ProxyUtil.setter(obj, field, cell.toString(), map.get(field));
-			}
-			list.add(obj);
-		}
-		in.close();
-		return list;
-	}
-
-	/**
-	 * 
-	 * @Title: leadingIn
-	 * @Description: excel导入
-	 * @param clazz
-	 * @param convert
-	 * @param in
-	 * @return
-	 * @throws IOException 
-	 * @throws IllegalAccessException 
-	 * @throws InstantiationException 
-	 * @throws IllegalArgumentException 
-	 * @throws SecurityException 
-	 * @throws NoSuchFieldException 
-	 * @throws ParseException 
-	 */
-	@SuppressWarnings({ "rawtypes", "resource" })
-	public static List<?> leadingIn(Class<?> clazz, Map<String, ExcelConvert> convert, InputStream in) throws IOException, InstantiationException, IllegalAccessException, NoSuchFieldException, SecurityException, IllegalArgumentException, ParseException {
-		List<Object> list = new ArrayList<Object>();
-		int i = 0;
-		Workbook book;
-		try {
-			book = new HSSFWorkbook(in);
-		} catch (Exception e) {
-			book = new XSSFWorkbook(in);
-		}
-		Sheet sheet = book.getSheetAt(0);
-		List<String> fieldNames = new ArrayList<String>();
-		Row header = sheet.getRow(0);
-		for (int cIndex = header.getFirstCellNum(); cIndex < header.getLastCellNum(); cIndex++) {
-			Cell cell = header.getCell(cIndex);
-			fieldNames.add(cell.toString());
-		}
-		Map<String, Class<?>> map = ProxyUtil.getFields(clazz);
-		for (int row = 1; row < sheet.getLastRowNum(); row++) {
-			i = 0;
-			Object obj = clazz.newInstance();
-			Row data = sheet.getRow(row);
-			for (String field : fieldNames) {
-				Cell cell = data.getCell(i++);
+			for (int i = 0; i < fieldNames.size(); i++) {
+				String field = fieldNames.get(i);
+				if(map.get(field) == null) {
+					continue;
+				}
+				Cell cell = data.getCell(i);
 				ExcelConvert cc = convert.get(field);
 				if (cc != null && !cc.getClass().isInterface())
 					ProxyUtil.setFieldValue(obj, field, cc.convertToObject(cell.toString()));
@@ -187,5 +165,4 @@ public class ExcelUtil {
 		in.close();
 		return list;
 	}
-
 }
