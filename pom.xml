@@ -7,7 +7,7 @@
 	<version>1.0.0-Releases</version>
 	<packaging>jar</packaging>
 	<name>xexcel</name>
-	<description>excel import/export util，Be based on jxl implement</description>
+	<description>excel import/export util，Be based on poi implement</description>
 	<url>http://www.yaxin.tk</url>
 	<licenses>
 	    <license>
