@@ -4,7 +4,7 @@
 
 	<groupId>tk.yaxin</groupId>
 	<artifactId>xexcel</artifactId>
-	<version>1.0.0-Releases</version>
+	<version>1.0.1-Releases</version>
 	<packaging>jar</packaging>
 	<name>xexcel</name>
 	<description>excel import/export util，Be based on poi implement</description>
