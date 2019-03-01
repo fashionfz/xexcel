@@ -134,7 +134,9 @@ public class ExcelUtil {
 		Row header = sheet.getRow(0);
 		for (int cIndex = header.getFirstCellNum(); cIndex < header.getLastCellNum(); cIndex++) {
 			Cell cell = header.getCell(cIndex);
-			fieldNames.add(cell.toString());
+			if(cell != null) {
+				fieldNames.add(cell.toString());
+			}
 		}
 		Map<String, Class<?>> map = ProxyUtil.getFieldMap(clazz);
 		Map<String, ExcelConvert> convert = getConvert(ProxyUtil.getFields(clazz));
@@ -148,10 +150,12 @@ public class ExcelUtil {
 				}
 				Cell cell = data.getCell(i);
 				ExcelConvert cc = convert.get(field);
-				if (cc != null && !cc.getClass().isInterface())
-					ProxyUtil.setFieldValue(obj, field, cc.convertToObject(cell.toString()));
-				else
-					ProxyUtil.setter(obj, field, cell.toString(), map.get(field));
+				if(cell != null) {
+					if (cc != null && !cc.getClass().isInterface())
+						ProxyUtil.setFieldValue(obj, field, cc.convertToObject(cell.toString()));
+					else
+						ProxyUtil.setter(obj, field, cell.toString(), map.get(field));
+				}
 			}
 			list.add(obj);
 		}
